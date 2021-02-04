@@ -33,6 +33,40 @@ exports.create = (req, res) => {
     });
 };
 
+// Add new key at existing project
+exports.setNewKey = (req, res) => {
+    // Validate request
+    if (!(req.body.newKey)) {
+        res.status(400).send({
+            message: "Some required fields are empty !"
+        });
+        return;
+    }
+
+    //Mongoose option to make it returns new document and not the old one, when updating
+    const optionUpdate = {
+        new: true
+    }
+
+    Project.findById(req.params.id).then(data => {
+        let project = data;
+        project.keys.push(req.body.newKey);
+        Project.findByIdAndUpdate(req.params.id, project, optionUpdate).then(data => {
+            res.send(data);
+        }).catch(err => {
+            res.status(500).send({
+                message:
+                err.message || "Some error occurred while getting the projects."
+            });
+        })
+    }).catch(err => {
+        res.status(500).send({
+            message:
+            err.message || "Some error occurred while getting the projects."
+        });
+    })
+};
+
 // Retrieve all Projects from the database.
 exports.findAll = (req, res) => {
     Project.find({})
@@ -49,9 +83,9 @@ exports.findAll = (req, res) => {
 
 // Find a single Project with an id
 exports.findOne = (req, res) => {
-    Project.find({_id:req.params.id})
+    Project.findById(req.params.id)
     .then(data => {
-        res.send(data[0]);
+        res.send(data);
     })
     .catch(err => {
         res.status(500).send({
@@ -68,15 +102,5 @@ exports.update = (req, res) => {
 
 // Delete a Project with the specified id in the request
 exports.delete = (req, res) => {
-  
-};
-
-// Delete all Projects from the database.
-exports.deleteAll = (req, res) => {
-  
-};
-
-// Find all published Projects
-exports.findAllPublished = (req, res) => {
   
 };

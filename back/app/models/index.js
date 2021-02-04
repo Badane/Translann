@@ -6,7 +6,8 @@ const translation = require("./translation.model.js")
 //Dependencies
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://'+dbConfig.host+'/'+dbConfig.db, {useNewUrlParser: dbConfig.useNewUrlParser, useUnifiedTopology: dbConfig.useUnifiedTopology});
+mongoose.connect('mongodb://' + dbConfig.host + '/' + dbConfig.db, { useNewUrlParser: dbConfig.useNewUrlParser, useUnifiedTopology: dbConfig.useUnifiedTopology });
+mongoose.set('useFindAndModify', false);
 
 const mongo = mongoose.connection;
 mongo.on('error', console.error.bind(console, 'connection error:'));

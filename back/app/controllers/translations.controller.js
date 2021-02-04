@@ -18,12 +18,10 @@ exports.create = (req, res) => {
         translated: req.body.translated
     };
 
-    // Save Langauge in the database
-    Translation.create(translation)
-    .then(data => {
+    // Save Language in the database
+    Translation.create(translation).then(data => {
         res.send(data);
-    })
-    .catch(err => {
+    }).catch(err => {
         res.status(500).send({
             message:
             err.message || "Some error occurred while creating the translation."
@@ -31,13 +29,46 @@ exports.create = (req, res) => {
     });
 };
 
-// Find a single translation with an id
+// Add key project id
+exports.setKeyFromProject = (req, res) => {
+    // Validate request
+    if (!(req.body.language && req.body.translation && req.body.index)) {
+        res.status(400).send({
+            message: "Some required fields are empty !"
+        });
+        return;
+    }
+
+    //Mongoose option to make it returns new document and not the old one, when updating
+    const optionUpdate = {
+        new: true
+    }
+
+    // Save Langauge in the database
+    Translation.findOne({projectId:req.params.id,language:req.body.language}).then(data => {
+        let translation = data;
+        translation.translated[req.body.index] = req.body.translation;
+        Translation.findByIdAndUpdate(translation._id, translation, optionUpdate).then(data => {
+            res.send(data);
+        }).catch(err => {
+            res.status(500).send({
+                message:
+                err.message || "Some error occurred while getting the transaltion."
+            });
+        })
+    }).catch(err => {
+        res.status(500).send({
+            message:
+            err.message || "Some error occurred while creating the translation."
+        });
+    });
+};
+
+// Find a single translation from its id
 exports.findOne = (req, res) => {
-    Translation.find({_id:req.params.id})
-    .then(data => {
-        res.send(data[0]);
-    })
-    .catch(err => {
+    Translation.findById(req.params.id).then(data => {
+        res.send(data);
+    }).catch(err => {
         res.status(500).send({
             message:
             err.message || "Some error occurred while getting the translation."
@@ -45,13 +76,11 @@ exports.findOne = (req, res) => {
     })
 };
 
-// Find a single translation with project's id
+// Find translations from project's id
 exports.findFromProject = (req, res) => {
-    Translation.find({projectId:req.params.id})
-    .then(data => {
+    Translation.find({projectId:req.params.id}).then(data => {
         res.send(data);
-    })
-    .catch(err => {
+    }).catch(err => {
         console.log(err.message)
         res.status(500).send({
             message:

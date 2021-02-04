@@ -3,26 +3,23 @@ module.exports = app => {
   
     var router = require("express").Router();
   
-    // Create a new Tutorial
+    // Create a new project
     router.post("/", projects.create);
+    
+    // Add new key
+    router.put("/:id/key", projects.setNewKey);
   
     // Retrieve all projects
     router.get("/", projects.findAll);
   
-    // Retrieve all published projects
-    router.get("/published", projects.findAllPublished);
-  
-    // Retrieve a single Tutorial with id
+    // Retrieve a single project with id
     router.get("/:id", projects.findOne);
   
-    // Update a Tutorial with id
+    // Update a project with id
     router.put("/:id", projects.update);
   
-    // Delete a Tutorial with id
+    // Delete a project with id
     router.delete("/:id", projects.delete);
-  
-    // Delete all projects
-    router.delete("/", projects.deleteAll);
   
     app.use('/api/projects', router);
   };

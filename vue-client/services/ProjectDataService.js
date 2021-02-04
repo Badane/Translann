@@ -12,6 +12,10 @@ class ProjectDataService {
   create(data) {
     return http.post("/projects", data);
   }
+  
+  setKey(id,data) {
+    return http.put(`/projects/${id}/key`, data);
+  }
 
   update(id, data) {
     return http.put(`/projects/${id}`, data);
@@ -19,14 +23,6 @@ class ProjectDataService {
 
   delete(id) {
     return http.delete(`/projects/${id}`);
-  }
-
-  deleteAll() {
-    return http.delete(`/projects`);
-  }
-
-  findByTitle(title) {
-    return http.get(`/projects?title=${title}`);
   }
 }
 

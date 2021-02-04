@@ -12,6 +12,10 @@ class TranslationDataService {
   create(data) {
     return http.post("/translations", data);
   }
+  
+  setKeyFromProject(id,data) {
+    return http.put(`/translations/project/${id}`, data);
+  }
 
   update(id, data) {
     return http.put(`/translations/${id}`, data);

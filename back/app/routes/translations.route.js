@@ -14,6 +14,9 @@ module.exports = app => {
   
     // Update a Translation with id
     router.put("/:id", translations.update);
+    
+    // Add translation key from project id
+    router.put("/project/:id", translations.setKeyFromProject);
   
     // Delete a Translation with id
     router.delete("/:id", translations.delete);
