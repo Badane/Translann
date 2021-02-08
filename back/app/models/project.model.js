@@ -17,7 +17,7 @@ const schema = new Schema({
     },
     default: {
         type : String,
-        enum: ['fr', 'en', 'es', 'it'],
+        enum: ['fr', 'en', 'es', 'it','de'],
         required : true
     },
     keys: {

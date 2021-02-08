@@ -60,7 +60,6 @@ export default {
     methods: {
         onSubmit(event) {
             event.preventDefault()
-            // alert(JSON.stringify(this.form))
             projectData.create(this.form).then(res => {
                 if(res.status == 200){
                     this.$router.push('projects');

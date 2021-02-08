@@ -16,24 +16,26 @@
                     <div>
                         <b-collapse id="collapse-1" class="mt-1 mb-2">
                             <b-card>
-                                <b-form-group
-                                id="alias-language"
-                                label-cols-sm="4"
-                                label-cols-lg="3"
-                                content-cols-sm
-                                content-cols-lg="7"
-                                label="Add new language"
-                                label-for="input-language">
-                                    <b-input-group class="mb-4">
-                                        <b-form-select
-                                            id="input-language"
-                                            v-model="language.newLanguage"
-                                            :options="language.list"
-                                            required
-                                            ></b-form-select>
-                                            <b-button class="ml-4" type="submit" variant="success">Add</b-button>
-                                    </b-input-group>
-                                </b-form-group>
+                                <b-form @submit="onTranslationSubmit">
+                                    <b-form-group
+                                    id="alias-language"
+                                    label-cols-sm="4"
+                                    label-cols-lg="3"
+                                    content-cols-sm
+                                    content-cols-lg="7"
+                                    label="Add new language"
+                                    label-for="input-language">
+                                        <b-input-group class="mb-4">
+                                            <b-form-select
+                                                id="input-language"
+                                                v-model="language.newLanguage"
+                                                :options="language.list"
+                                                required
+                                                ></b-form-select>
+                                                <b-button class="ml-4" type="submit" variant="success">Add</b-button>
+                                        </b-input-group>
+                                    </b-form-group>
+                                </b-form>
                             </b-card>
                         </b-collapse>
 
@@ -83,6 +85,7 @@ export default {
     data() {
         return {
             project:{
+                _id:"",
                 name:"Loading...",
                 description:"Loading...",
                 key:[]
@@ -96,7 +99,7 @@ export default {
                 list:[
                     { value: null, text: 'Please select an option',disabled: true }
                 ],
-                newLanguage:null
+                newLanguage:null            
             },
             keys:{
                 items:[],
@@ -110,6 +113,7 @@ export default {
         }
     },
     mounted() {
+        let tempLangData = {...langData};
         //Get project data
         projectData.get(this.$route.params.idProject).then(res=>{
             if(res.status == 200){
@@ -119,12 +123,22 @@ export default {
                 //Get project' translations
                 translationData.getFromProject(this.$route.params.idProject).then(res=>{
                     res.data.forEach(translation => {
+                        //remove from possible new languages the used ones
+                        delete tempLangData[translation.language];
+
+                        //Set project' translations in the table
                         this.language.items.push(
                             {
                                 language:langData[translation.language].name,
                                 progress:99
                             }
                         );
+                    });
+
+                    //Set select inpout from json lang file
+                    tempLangData = Object.entries(tempLangData);
+                    tempLangData.forEach(([key, value]) => {
+                        this.language.list.push({value:key, text:value.name});
                     });
                 });
 
@@ -136,11 +150,6 @@ export default {
                     })
                 });
             }
-        });
-
-        //Set select inpout from json lang file
-        Object.entries(langData).forEach(([key, value]) => {
-            this.language.list.push({value:key, text:value.name});
         });
     },
     methods: {
@@ -168,6 +177,19 @@ export default {
                     this.keys.newKey = "";
                     this.keys.newKeyTranslation = "";
                 }
+            });
+        },
+        onTranslationSubmit(event){
+            event.preventDefault();
+            
+            const data = {
+                projectId: this.project._id,
+                language: this.language.newLanguage           
+            };
+
+            translationData.create(data).then(res=>{
+                 if(res.status == 200)
+                    this.$router.go(0);
             });
         }
     },  

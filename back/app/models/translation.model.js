@@ -9,7 +9,7 @@ const schema = new Schema({
     },
     language: {
         type : String,
-        enum: ['fr', 'en', 'es', 'it'],
+        enum: ['fr', 'en', 'es', 'it','de'],
         required : true
     },
     translated: {
