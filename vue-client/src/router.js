@@ -20,17 +20,12 @@ export default new Router({
     {
       path: "/projects/:idProject/:idTranslation",
       name: "translation-details",
-      component: () => import("./components/Translation")
+      component: () => import("./components/TranslationDetails")
     },
     {
       path: "/add-project",
       name: "add-project",
       component: () => import("./components/AddProject")
     },
-    {
-      path: "/add-translation",
-      name: "add-translation",
-      component: () => import("./components/AddTranslation")
-    }
   ]
 });

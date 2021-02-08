@@ -10,9 +10,13 @@
                     <b-table
                     :items="language.items"
                     :fields="language.fields"
-                    responsive="sm"
                     sort-icon-left
-                    ></b-table>
+                    hover>
+                        <template #cell(language)="data">
+                            <router-link :to="{ name: 'translation-details', params: { idProject: project._id, idTranslation: data.item.id }}">{{ data.value }}</router-link>
+                        </template>
+                    </b-table>
+
                     <div>
                         <b-collapse id="collapse-1" class="mt-1 mb-2">
                             <b-card>
@@ -129,6 +133,7 @@ export default {
                         //Set project' translations in the table
                         this.language.items.push(
                             {
+                                id:translation._id,
                                 language:langData[translation.language].name,
                                 progress:99
                             }
