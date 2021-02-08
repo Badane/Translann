@@ -36,6 +36,7 @@
 </template>
 <script>
 import projectData from '../../services/ProjectDataService';
+import langData from '../../ressources/lang.json'
 export default {
     data() {
         return {
@@ -45,14 +46,16 @@ export default {
                 language: null,
             },
             languages: [
-                { value: null, text: 'Please select an option',disabled: true },
-                { value: 'fr', text: 'Francais' },
-                { value: 'en', text: 'English' },
-                { value: 'es', text: 'Espnol' },
-                { value: 'it', text: 'Italiano' }
+                { value: null, text: 'Please select an option',disabled: true }
             ], 
             show: true
         }   
+    },
+    mounted() {
+        //Set select inpout from json lang file
+        Object.entries(langData).forEach(([key, value]) => {
+            this.languages.push({value:key, text:value.name});
+        });
     },
     methods: {
         onSubmit(event) {
